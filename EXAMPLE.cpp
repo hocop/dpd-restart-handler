@@ -3,10 +3,7 @@
 // compile command:
 // g++ EXAMPLE.cpp Analyser.cpp Restart.cpp Conf.cpp vect3/vect3.cpp -o example
 
-// This is an example of how to use this lib
-// It loads file restart.dat
-// Makes some computations
-// Then it saves file as restart.sdat in another format
+// This is to demonstrate usage of the lib
 
 int main() {
 	// load file
@@ -15,7 +12,7 @@ int main() {
 	// print number of chains
 	cout << "n chains: " << restart.chain.size() << endl;
 	
-	// compute order parameter (if it is nematic then par will be 1, else 0)
+	// compute order parameter (if it is nematic then it will be 1, else 0)
 	float order = countNematicOrderChainsMaxR(restart);
 	cout << "order par: " << order << endl;
 	
