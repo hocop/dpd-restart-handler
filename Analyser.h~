@@ -21,7 +21,7 @@ void countEEDist(Restart const &r, flt &mean, flt &stdev); // end-to-end distanc
 // Liquid crystals
 vector<flt> countNematicOrderBonds(Restart const &r, int rmin, int rmax);
 vector<flt> countNematicOrderChains(Restart const &r, int rmin, int rmax);
-flt countNematicOrderChainsMaxR(Restart const &r);
+flt countNematicOrderChainsMax(Restart const &r);
 vect3 countDirectorChains(Restart const &r);
 vect3 countDirectorBonds(Restart const &r); // not implemented
 flt countSmecticOrder(Restart const &r, flt periodRec);

@@ -109,15 +109,15 @@ flt vect3::sqr() const{
 flt vect3::normMax() const{
 	flt a = fabs(x), b = fabs(y), c = fabs(z);
 	if(a > b)
-		if(a > c)
+		if(a < c)
+			return c;
+		else
 			return a;
-		else
-			return c;
 	else
-		if(b > c)
-			return b;
-		else
+		if(b < c)
 			return c;
+		else
+			return b;
 }
 
 vect3 vect3::unit() const{

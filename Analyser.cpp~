@@ -180,7 +180,7 @@ vector<flt> countNematicOrderChains(Restart const &r, int rmin, int rmax) {
 }
 
 flt countNematicOrderChainsMaxR(Restart const &r) {
-	int sz = (int) r.box.normMax(); // size of box
+	int sz = (int) r.box.normMax();
 	return countNematicOrderChains(r, sz, sz)[0];
 }
 

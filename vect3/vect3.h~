@@ -33,7 +33,7 @@ struct vect3{
 	friend istream& operator>>(istream& is, vect3& a);
 	flt mod() const;
 	flt sqr() const;
-	flt normMax() const;
+	flt normMax(
 	vect3 unit() const;
 	
 	flt x, y, z;
