@@ -14,9 +14,14 @@ Restart selectByType(Restart const &r, vector<int> &type); // get system with on
 // Common math operations
 void meanAndStdev(vector<flt> value, flt &mean, flt &stdev); // get mean and stdev of this array
 
-// Chains
+// Chains low-level operations
 vect3 centerOfMassOfChain(Restart const &r, int i); // i is index of chain
 void countEEDist(Restart const &r, flt &mean, flt &stdev); // end-to-end distance; mean and stdev
+
+// Common termodynamics
+enum Units {ATOMS, CHAINS, NODES};
+enum Space {LINE, PLANE, VOLUME};
+vector<vect3> countDisplacement(Restart &r1, Restart &r2, Units units, Space space=VOLUME, vect3 dir=vect3());
 
 // Liquid crystals
 vector<flt> countNematicOrderBonds(Restart const &r, int rmin, int rmax);

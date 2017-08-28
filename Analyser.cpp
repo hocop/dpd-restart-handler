@@ -135,7 +135,7 @@ vector<flt> countNematicOrderChains(Restart const &r, int rmin, int rmax) {
 		Sr[ri - rmin] = 0.f;
 		nCounted[ri - rmin] = 0;
 	}
-	int accuracy = 1 + r.nchains / 300;
+	int accuracy = 1 + r.nchains / 500;
 	for(int i = 0; i < r.nchains; i += accuracy) {
 		vector<vect3> mdir(rmax - rmin);
 		for (int j = 0; j < r.nchains; j += 1) {
@@ -331,7 +331,7 @@ flt countSmecticOrder(Restart const &r, flt periodRec) {
 	flt stdevMean = 0;
 	meanAndStdev(finDist, meanMean, stdevMean);
 
-	cout << "period: " << periodMin << endl;
+//	cout << "period: " << periodMin << endl;
 //	cout << "cords\tcords min\n";
 //	for(int i = 0; i < cord.size(); ++i)
 //		cout << cord[i] << '\t' << cmin[i] * periodMin << endl;
@@ -424,7 +424,36 @@ vect3 centerOfMassOfChain(Restart const &r, int i) {
 	return cm;
 }
 
-
+vector<vect3> countDisplacement(Restart &r1, Restart &r2, Units units, Space space, vect3 dir) {
+	int n;
+	if(units == ATOMS)
+		n = r1.natoms;
+	if(units == CHAINS)
+		n = r1.nchains;
+	vector<vect3> disp(n);
+	
+	for(int i = 0; i < n; ++i) {
+		vect3 x1, x2;
+		if(units == ATOMS) {
+			x1 = r1.x[i];
+			x2 = r2.x[i];
+		}
+		if(units == CHAINS) {
+			x1 = centerOfMassOfChain(r1, i);
+			x2 = centerOfMassOfChain(r2, i);
+		}
+		
+		vect3 d = x2 - x1;
+		r1.distPBC(d);
+		if(space == LINE)
+			d = (d*dir) * dir;
+		if(space == PLANE)
+			d = d - (d*dir) * dir;
+		
+		disp[i] = d;
+	}
+	return disp;
+}
 
 
 
