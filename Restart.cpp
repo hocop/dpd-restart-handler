@@ -355,7 +355,7 @@ void topologyReverse(Restart &r) { // unchecked
 		}
 	r.nbonds = (int) r.a1.size();
 }
-Restart importGav(string fname, bool withTopology) {
+Restart importGav(string fname, int flag, bool withTopology) {
 	ifstream f;
 	f.open(fname.c_str());
 	int natoms;
@@ -377,7 +377,10 @@ Restart importGav(string fname, bool withTopology) {
 		f >> n;
 		--n;
 		int type_tmp;
-		f >> val >> type_tmp >> fl >> x[n][0] >> x[n][1] >> x[n][2];
+		f >> val >> type_tmp;
+		if(flag == 1)
+			f >> fl;
+		f >> x[n][0] >> x[n][1] >> x[n][2];
 		type[n] = type_tmp - 1;
 		valency[n] = val;
 		flag[n] = fl;

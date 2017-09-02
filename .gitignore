@@ -3,3 +3,4 @@
 CMakeLists.txt
 example
 .idea
+main.cpp
