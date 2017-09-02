@@ -455,6 +455,146 @@ vector<vect3> countDisplacement(Restart &r1, Restart &r2, Units units, Space spa
 	return disp;
 }
 
+void countPDI (Restart const &s , flt &avg, flt &stdev) {
+	double fullsum = 0;
+	double sum_kvad= 0;
+	double start_bonds = 8400;
+	double max_bonds = 40220;
+	double kolvo_PAV= 0;
+	double kolvo_diblock = 0;
+	double kolvo_triblock = 0;
+	int MWD_kol1 = 0;
+	int MWD_kol2 = 0;
+	int MWD_shcet = 1;
+	int kolvo_MWD = 1;
+	vector<int> chainType(s.chain.size());
+	vector<int> typeNum(3);
+	for (int i = 0; i < typeNum.size(); ++i)
+		typeNum[i] = 0;
+
+	for (int i = 0; i < s.chain.size(); ++i){
+		int changes = 0;
+		int lastType = s.type[s.chain[i][0]];
+		for (int j = 1; j < s.chain[i].size(); ++j) {
+			int type = s.type[s.chain[i][j]];
+			changes += (type != lastType) ? 1 : 0;
+			lastType = type;
+		}
+		chainType[i] = changes + 1;
+		++typeNum[changes];
+	}
+
+	double sum[3] = { 0 };
+	double sum1 = 0;
+	ofstream block4("block4.txt");
+	for (int i = 0; i < typeNum.size(); ++i) {
+		ofstream block_i((string("block") + to_string(i + 1) + string(".txt")).c_str());
+		int count = 1;
+		for (int j = 0; j < chainType.size(); ++j){
+			if (chainType[j] == i + 1)
+			{
+				block_i << count << '\t' << chainType[j] << '\t' << s.chain[j].size() << endl;
+				if (i == 1)
+				{
+					kolvo_PAV++;
+				}
+				if (i == 2)
+				{
+					kolvo_diblock++;
+				//	MWD_at_time << '\t' << chainType[j]<< '\t' << s.chain[j].size() -22 << endl;
+				//	Super_MWD_at_time << s.chain[j].size() - 22 << endl;
+
+				}
+				sum[i] = sum[i] + s.chain[j].size();
+			//	sum_kvad = sum_kvad + (s.chain[j].size() -22) *(s.chain[j].size() -22);
+				++count;
+			}
+			if ((chainType[j] > typeNum.size() && i + 1 == typeNum.size()))
+			{
+			//	block4 << count << '\t' << chainType[j] << '\t' << s.chain[j].size() << endl;
+			//	MWD_at_time << '\t' << chainType[j] << '\t' << s.chain[j].size() - 44 << endl;
+			//	Super_MWD_at_time << s.chain[j].size() - 44 << endl;
+
+				kolvo_triblock++;
+				sum1 = sum1 + s.chain[j].size();
+				//sum_kvad = sum_kvad + (s.chain[j].size() -44) *(s.chain[j].size() - 44);
+				++count;
+			}
+
+
+
+		}
+		//block_i << "Suma ravna " << sum[i] << endl;
+		// sum = 0;
+
+	}
+	//block4 << "Suma po trblockam ravna " << sum1 << endl;
+	//ofstream finally_conformation("final.txt");
+	//finally_conformation << sum[0] << " " << sum[1] << " " << sum[2] << " " << sum1 << endl << flush;
+	//finally_conformation << s.nbonds<< sum[0] << " " << sum[1] << " " << sum[2] << " " << sum1 << endl << flush;
+	double conversia = 0;
+	double x = s.nbonds;
+	//conversia = (100 * (x - 8400)) / (31800);
+	conversia = (100 * (x - start_bonds)) / (31800);
+	//finally_conformation << s.nbonds << " " << conversia << " " << sum[0] << " " << sum[1] << " " << sum[2] << " " << sum1 << endl << flush;
+	//-------------------------------------------------------------------------------------------------
+	double homo = 0; //procent homoblock
+	homo = double(((100 * sum[0])) / (max_bonds)); //procent homoblock
+	double PAV = 0;//procent PAV
+	PAV = (((100 * sum[1])) / (max_bonds));//procent PAV
+	double diblock = 0;//procent diblock
+	diblock = (((100 * sum[2])) / (max_bonds));//procent diblock
+	double triblock = 0;//procent triblock
+	triblock = (((100 * sum1)) / (max_bonds));//procent triblock
+	double monomer = 0;
+	monomer = (100 - homo - PAV - diblock - triblock);
+	//-------------------------------------------------------------------------------------------------
+	//finally_conformation1 << conversia << " " << homo << " " << PAV << " " << diblock << " " << triblock << " " << monomer << endl << flush;
+	//-------------------------------------------------------------------------------------------------
+	//int indecate;
+	//indecate = p * 50000;
+	//conversion_at_time << indecate << " " << conversia << endl << flush;
+	//-------------------------------------------------------------------------------------------------
+	fullsum = sum[2] + sum1 - 22 * kolvo_diblock - 44 * kolvo_triblock;
+	double average = 0;
+	double dispersion = 0;
+	double standard_deviation = 0;
+
+	double PDI = 0;
+	double Mw = 0;
+	if ((400 - kolvo_PAV - kolvo_triblock) != 0)
+	{
+
+		average = fullsum / (400 - kolvo_PAV - kolvo_triblock); //Mn
+		dispersion = (((sum_kvad) / (400 - kolvo_PAV - kolvo_triblock)) - average*average);
+		standard_deviation = sqrt(dispersion);
+
+
+		Mw = (sum_kvad / fullsum);
+
+		PDI = (Mw / average);
+
+
+	//	kolvo_at_time << conversia << " " <<kolvo_PAV << " "<< kolvo_diblock << " "<< kolvo_triblock << endl << flush;
+	//	average_at_time << conversia << " " << average << endl << flush;
+	//	dispersion_at_time << conversia << " " << dispersion << " " << standard_deviation << endl << flush;
+	//	PDI_at_time << conversia << " " << PDI << endl << flush;
+	}
+	if ((400 - kolvo_PAV - kolvo_triblock) == 0)
+	{
+		average = 0;
+		dispersion = 0;
+		standard_deviation = 0;
+		PDI = 0;
+		//average_at_time << conversia << " " << average << endl << flush;
+		//dispersion_at_time << conversia << " " << dispersion << " " << standard_deviation << endl << flush;
+		//PDI_at_time << conversia << " " << PDI << endl << flush;
+
+	}
+	//-------------------------------------------------------------------------------------------------
+	avg = average ;
+	stdev =PDI ;
+}
 
 
 
