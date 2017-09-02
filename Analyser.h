@@ -31,5 +31,7 @@ vect3 countDirectorChains(Restart const &r);
 vect3 countDirectorBonds(Restart const &r); // not implemented
 flt countSmecticOrder(Restart const &r, flt periodRec);
 
+//Polymer
+void countPDI (Restart const &r ,flt &avg, flt &PDI) ;
 
 #endif //ANALYSE_ANALYSER_H
