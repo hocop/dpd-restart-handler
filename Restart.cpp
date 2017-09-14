@@ -666,7 +666,7 @@ void writeval(double val, int precision, std::ostream &out, int tabsize) { // th
 	out << val;
 }
 
-void exportGav(Restart &rst, string fname) {
+void exportGav(Restart &rst, string fname, int flag) {
 	ofstream out(fname.c_str());
 	writeval(rst.natoms, out, TABSIZE);
 	writeval(rst.density, 4, out, 2);
@@ -679,7 +679,8 @@ void exportGav(Restart &rst, string fname) {
 		writeval(q + 1, out, TABSIZE);
 		writeval(rst.valency[q], out, 4);
 		writeval(rst.type[q] + 1, out, 4);
-		writeval(rst.flag[q], out, 4);
+		if(flag == 1)
+			writeval(rst.flag[q], out, 4);
 		writeval(rst.x[q][0], 6, out, 6);
 		writeval(rst.x[q][1], 6, out, 6);
 		writeval(rst.x[q][2], 6, out, 6);
