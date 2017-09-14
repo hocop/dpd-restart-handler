@@ -355,7 +355,7 @@ void topologyReverse(Restart &r) { // unchecked
 		}
 	r.nbonds = (int) r.a1.size();
 }
-Restart importGav(string fname, int flag, bool withTopology) {
+Restart importGav(string fname, int withflag, bool withTopology) {
 	ifstream f;
 	f.open(fname.c_str());
 	int natoms;
@@ -378,7 +378,7 @@ Restart importGav(string fname, int flag, bool withTopology) {
 		--n;
 		int type_tmp;
 		f >> val >> type_tmp;
-		if(flag == 1)
+		if(withflag == 1)
 			f >> fl;
 		f >> x[n][0] >> x[n][1] >> x[n][2];
 		type[n] = type_tmp - 1;
@@ -666,7 +666,7 @@ void writeval(double val, int precision, std::ostream &out, int tabsize) { // th
 	out << val;
 }
 
-void exportGav(Restart &rst, string fname, int flag) {
+void exportGav(Restart &rst, string fname, int withflag) {
 	ofstream out(fname.c_str());
 	writeval(rst.natoms, out, TABSIZE);
 	writeval(rst.density, 4, out, 2);
@@ -679,7 +679,7 @@ void exportGav(Restart &rst, string fname, int flag) {
 		writeval(q + 1, out, TABSIZE);
 		writeval(rst.valency[q], out, 4);
 		writeval(rst.type[q] + 1, out, 4);
-		if(flag == 1)
+		if(withflag == 1)
 			writeval(rst.flag[q], out, 4);
 		writeval(rst.x[q][0], 6, out, 6);
 		writeval(rst.x[q][1], 6, out, 6);

@@ -48,12 +48,12 @@ struct Restart {
 	void add(Restart const& r, vect3 r0, flt a, flt b, flt c, flt scale=1.f); //r0 - pos; a,b,c - Euler angles
 };
 
-Restart importGav(string fname, int flag, bool withTopology = true); // gavrilov's dat file
+Restart importGav(string fname, int withflag, bool withTopology = true); // gavrilov's dat file
 Restart importMol(string fname, Conf conf); // mol file
 Restart importSmall(string fname); // smallest possible format: ~1/10 of gav. dat file size
 Restart importNormal(string fname); // format that can be read with eyes: ~1/3 of gav. dat file size
 
-void exportGav(Restart &rst, string fname, int flag);
+void exportGav(Restart &rst, string fname, int withflag);
 void exportSmall(Restart &rst, string fname);
 void exportNormal(Restart &rst, string fname);
 
