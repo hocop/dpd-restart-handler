@@ -23,11 +23,11 @@ struct Restart {
 	Restart(Conf const &conf);
 	Restart(Restart const &r);
 	
-	int natoms;
-	int nbonds;
-	int nangles;
-	int nchains;
-	int nnodes;
+	int natoms; // number of atoms
+	int nbonds; // number of bonds
+	int nangles; // number of angles
+	int nchains; // number of chains (sequence where each atom has 2 bonds)
+	int nnodes; // number of nodes (when 1 atom has >2 bonds)
 	
 	flt density;
 	
@@ -48,10 +48,11 @@ struct Restart {
 	void add(Restart const& r, vect3 r0, flt a, flt b, flt c, flt scale=1.f); //r0 - pos; a,b,c - Euler angles
 };
 
-Restart importGav(string fname, int withflag, bool withTopology = true); // gavrilov's dat file
+Restart importDpdNano(string fname, int withflag, bool withTopology = true); // dpd nano dat file
 Restart importMol(string fname, Conf conf); // mol file
 Restart importSmall(string fname); // smallest possible format: ~1/10 of gav. dat file size
 Restart importNormal(string fname); // format that can be read with eyes: ~1/3 of gav. dat file size
+Restart importLmp(string fname);
 
 void exportGav(Restart &rst, string fname, int withflag);
 void exportSmall(Restart &rst, string fname);

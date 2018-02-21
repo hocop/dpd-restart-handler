@@ -4,6 +4,7 @@
 
 #include "Restart.h"
 #include <iomanip>
+#include "Conf.h"
 
 using namespace std;
 
@@ -355,7 +356,7 @@ void topologyReverse(Restart &r) { // unchecked
 		}
 	r.nbonds = (int) r.a1.size();
 }
-Restart importGav(string fname, int withflag, bool withTopology) {
+Restart importDpdNano(string fname, int withflag, bool withTopology) {
 	ifstream f;
 	f.open(fname.c_str());
 	int natoms;
@@ -638,6 +639,79 @@ Restart importNormal(string fname) {
 	}
 	f.close();
 	topologyReverse(r);
+	return r;
+}
+
+Restart importLmp(string fname) {
+	ifstream f(fname.c_str());
+	if( !f.is_open() ) {
+		throw "Error: could not open lammps restart file\n";
+	}
+	
+	string line;
+	vector<string> parsed;
+	
+	Restart r;
+	
+	while(getline(f, line)) {
+		parsed = parseLine(line);
+		if(parsed.size() == 0)
+			continue;
+		// read box size
+		if(parsed.size() == 4) {
+			if (parsed[3] == "xhi")
+				r.box[0] = (flt) atof(parsed[1].c_str());
+			if (parsed[3] == "yhi")
+				r.box[1] = (flt) atof(parsed[1].c_str());
+			if (parsed[3] == "zhi")
+				r.box[2] = (flt) atof(parsed[1].c_str());
+		}
+		// read number of atoms and bonds
+		if(parsed.size() > 1) {
+			if (parsed[1] == "atoms") {
+				r.natoms = atoi(parsed[0].c_str());
+				r.valency = vector<int>(r.natoms);
+				r.type = vector<int>(r.natoms);
+				r.flag = vector<int>(r.natoms);
+				r.x = vector<vect3>(r.natoms);
+			}
+			if (parsed[1] == "bonds") {
+				r.nbonds = atoi(parsed[0].c_str());
+				r.a1 = vector<int>(r.nbonds);
+				r.a2 = vector<int>(r.nbonds);
+			}
+		}
+		// read atoms
+		if(parsed[0] == "Atoms") {
+			getline(f, line);
+			for(int i = 0; i < r.natoms; ++i) {
+				getline(f, line);
+				parsed = parseLine(line);
+				int index = atoi(parsed[0].c_str());
+				--index;
+				// we read only this info
+				r.type[index] = atoi(parsed[2].c_str()) - 1;
+				r.x[index][0] = (flt) atof(parsed[3].c_str());
+				r.x[index][1] = (flt) atof(parsed[4].c_str());
+				r.x[index][2] = (flt) atof(parsed[5].c_str());
+			}
+		}
+		// read bonds
+		if(parsed[0] == "Bonds") {
+			getline(f, line);
+			for(int i = 0; i < r.nbonds; ++i) {
+				getline(f, line);
+				parsed = parseLine(line);
+				int index = atoi(parsed[0].c_str());
+				--index;
+				r.a1[index] = atoi(parsed[2].c_str()) - 1;
+				r.a2[index] = atoi(parsed[3].c_str()) - 1;
+			}
+		}
+	}
+	
+	topology(r);
+	
 	return r;
 }
 
