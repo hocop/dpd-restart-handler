@@ -4,7 +4,6 @@
 
 #include "Restart.h"
 #include <iomanip>
-#include "Conf.h"
 
 using namespace std;
 
@@ -740,7 +739,7 @@ void writeval(double val, int precision, std::ostream &out, int tabsize) { // th
 	out << val;
 }
 
-void exportGav(Restart &rst, string fname, int withflag) {
+void exportDpdNano(Restart &rst, string fname, int withflag) {
 	ofstream out(fname.c_str());
 	writeval(rst.natoms, out, TABSIZE);
 	writeval(rst.density, 4, out, 2);

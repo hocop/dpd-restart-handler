@@ -54,7 +54,7 @@ Restart importSmall(string fname); // smallest possible format: ~1/10 of gav. da
 Restart importNormal(string fname); // format that can be read with eyes: ~1/3 of gav. dat file size
 Restart importLmp(string fname);
 
-void exportGav(Restart &rst, string fname, int withflag);
+void exportDpdNano(Restart &rst, string fname, int withflag);
 void exportSmall(Restart &rst, string fname);
 void exportNormal(Restart &rst, string fname);
 
